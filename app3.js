@@ -1,4 +1,6 @@
-function getMoney(players) {
+var SortBy = {"PointsPerDollar": 0, "Points": 1, "Salary": 2}
+
+function getMoney(players, sortby) {
 	var centers = []
 	var left_wingers = []
 	var right_wingers = []
@@ -38,8 +40,7 @@ function getMoney(players) {
 		}
 	}
 
-	// Sort in decreasing order of points/dollar
-	function compare(a, b) {
+	function compare_points_per_dollar(a, b) {
 		var a_ratio = a.ppg/a.salary
 		var b_ratio = b.ppg/b.salary
 		if (a_ratio == b_ratio) {
@@ -51,22 +52,37 @@ function getMoney(players) {
 		}
 	}
 
+	function compare_points(a, b) {
+		if (a.ppg == b.ppg) {
+			return 0;
+		} else if (a.ppg > b.ppg) {
+			return -1;
+		} else if (a.ppg < b.ppg) {
+			return 1;
+		}
+	}
+
+	if (sortby == SortBy.PointsPerDollar) {
+		centers.sort(compare_points_per_dollar)
+		left_wingers.sort(compare_points_per_dollar)
+		right_wingers.sort(compare_points_per_dollar)
+		defensemen.sort(compare_points_per_dollar)
+		goalies.sort(compare_points_per_dollar)
+	} else if (sortby = SortBy.Points) {
+		centers.sort(compare_points)
+		left_wingers.sort(compare_points)
+		right_wingers.sort(compare_points)
+		defensemen.sort(compare_points)
+		goalies.sort(compare_points)
+	}
+
 	var players_per_position = 8
 
-	centers.sort(compare)
-	centers.length = players_per_position // truncate that shit
-
-	left_wingers.sort(compare)
-	left_wingers.length = players_per_position // truncate that shit
-
-	right_wingers.sort(compare)
-	right_wingers.length = players_per_position // truncate that shit
-
-	defensemen.sort(compare)
-	defensemen.length = players_per_position // truncate that shit
-
-	goalies.sort(compare)
-	goalies.length = players_per_position // truncate that shit
+	centers.length = players_per_position
+	left_wingers.length = players_per_position
+	right_wingers.length = players_per_position
+	defensemen.length = players_per_position
+	goalies.length = players_per_position
 
 	function k_combinations(set, k) {
 		var i, j, combs, head, tailcombs;
