@@ -1,6 +1,44 @@
+var fs = require('fs')
+var request = require('request')
+var cheerio = require('cheerio')
+
+var players = JSON.parse(fs.readFileSync('2014-12-30.json', 'utf8'))
+
 var SortBy = {"PointsPerDollar": 0, "Points": 1, "Salary": 2}
 
-function getMoney(players, sortby) {
+request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, response, html) {
+		if (!error) {
+			var $ = cheerio.load(html)
+
+			var rotowire_players = []
+			
+			$('tr', 'tbody').each(function(i, elem) {
+				var player = {'name': '', 'projected': '', 'value': ''}
+
+				player.name = $(this).find('a').text()
+
+				$('td', this).each(function(i, elem) {
+					if (i == 5) {
+						player.projected = $(this).text()
+					} else if (i == 6) {
+						player.value = $(this).text()
+					}
+				})
+
+				if (player.projected > 0) {
+					rotowire_players.push(player)
+				}
+			})
+			
+			console.log(rotowire_players.length + ' players found on rotowire')
+
+			getMoney(players, SortBy.Points, rotowire_players)
+		} else {
+			console.log(error)
+		}
+	})
+
+function getMoney(players, sortby, rotowire_players) {
 	var centers = []
 	var left_wingers = []
 	var right_wingers = []
