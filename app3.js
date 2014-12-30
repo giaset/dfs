@@ -28,7 +28,8 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 				}
 			})
 
-			getMoney(players, SortBy.ProjectedPoints, rotowire_players)
+			/* CHANGE 'SORTBY' AS YOU PLEASE */
+			getMoney(players, SortBy.Points, rotowire_players)
 		} else {
 			console.log(error)
 		}
@@ -45,6 +46,31 @@ function getMoney(players, sortby, rotowire_players) {
 		var player = players[player_id]
 
 		var summary = { "id": player[2], "position": player[0], "name": player[1], "salary": parseInt(player[5]), "ppg": player[6], "games_played": parseInt(player[7])}
+
+		switch(summary.name) {
+			case 'Jon Quick':
+				summary.name = 'Jonathan Quick'
+				break
+
+			case 'Christopher Higgins':
+				summary.name = 'Chris Higgins'
+				break
+
+			case 'Pierre Parenteau':
+				summary.name = 'P.A. Parenteau'
+				break
+
+			case 'Richard Clune':
+				summary.name = 'Rich Clune'
+				break
+
+			case 'Jacob Muzzin':
+				summary.name = 'Jake Muzzin'
+				break
+
+			default:
+				break
+		}
 
 		if (summary.name in rotowire_players) {
 			summary.projected = rotowire_players[summary.name]
@@ -131,6 +157,7 @@ function getMoney(players, sortby, rotowire_players) {
 		goalies.sort(compare_projected_points)
 	}
 
+	/* SOMETIMES 9 WORKS, SOMETIMES IT DOESN'T */
 	var players_per_position = 9
 
 	centers.length = players_per_position
@@ -240,7 +267,8 @@ function getMoney(players, sortby, rotowire_players) {
 		}
 	}
 
-	rosters.sort(compare_total_projected)
+	/* CHANGE THIS AS YOU PLEASE */
+	rosters.sort(compare_total_points)
 
 	console.log(rosters[0])
 }
