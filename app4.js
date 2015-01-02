@@ -10,7 +10,7 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 			var players = []
 			
 			$('tr', 'tbody').each(function(i, elem) {
-				var player = {'name': '', 'position': '', 'salary': '', 'projected': '', 'projected_value': '', 'ppg': '', 'value': ''}
+				var player = {'name': '', 'team': '', 'position': '', 'salary': '', 'projected': '', 'projected_value': '', 'ppg': '', 'value': ''}
 
 				player.name = $(this).find('a').text()
 
@@ -18,6 +18,10 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 					switch (i) {
 						case 1:
 						player.position = $(this).text()
+						break
+
+						case 2:
+						player.team = $(this).text()
 						break
 
 						case 4:
