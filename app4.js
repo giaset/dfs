@@ -130,36 +130,40 @@ function getMoney(players, sortby, rotowire_players) {
 		} else if (a.projected_value < b.projected_value) {
 			return 1;
 		}
-	}	
+	}
+
+	/* SOMETIMES 9 WORKS, SOMETIMES IT DOESN'T */
+	var players_per_position = 9
 
 	if (sortby == SortBy.PointsPerDollar) {
+		console.log('Sorting top ' + players_per_position + ' players by avg. points per dollar.')
 		centers.sort(compare_points_per_dollar)
 		left_wingers.sort(compare_points_per_dollar)
 		right_wingers.sort(compare_points_per_dollar)
 		defensemen.sort(compare_points_per_dollar)
 		goalies.sort(compare_points_per_dollar)
 	} else if (sortby == SortBy.Points) {
+		console.log('Sorting top ' + players_per_position + ' players by avg. points.')
 		centers.sort(compare_points)
 		left_wingers.sort(compare_points)
 		right_wingers.sort(compare_points)
 		defensemen.sort(compare_points)
 		goalies.sort(compare_points)
 	} else if (sortby == SortBy.ProjectedPoints) {
+		console.log('Sorting top ' + players_per_position + ' players by projected points.')
 		centers.sort(compare_projected_points)
 		left_wingers.sort(compare_projected_points)
 		right_wingers.sort(compare_projected_points)
 		defensemen.sort(compare_projected_points)
 		goalies.sort(compare_projected_points)
 	} else if (sortby == SortBy.ProjectedPointsPerDollar) {
+		console.log('Sorting top ' + players_per_position + ' players by projected points per dollar.')
 		centers.sort(compare_projected_value)
 		left_wingers.sort(compare_projected_value)
 		right_wingers.sort(compare_projected_value)
 		defensemen.sort(compare_projected_value)
 		goalies.sort(compare_projected_value)
 	}
-
-	/* SOMETIMES 9 WORKS, SOMETIMES IT DOESN'T */
-	var players_per_position = 9
 
 	centers.length = players_per_position
 	left_wingers.length = players_per_position
@@ -268,8 +272,11 @@ function getMoney(players, sortby, rotowire_players) {
 		}
 	}
 
-	/* CHANGE THIS AS YOU PLEASE */
 	rosters.sort(compare_total_points)
+	console.log('Best roster sorted by avg. points:')
+	console.log(rosters[0])
 
+	rosters.sort(compare_total_projected)
+	console.log('Best roster sorted by projected points:')
 	console.log(rosters[0])
 }
