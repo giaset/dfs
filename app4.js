@@ -42,13 +42,30 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 					}
 				})
 
-				if (player.projected > 0) {
+				var excluded = []
+				process.argv.forEach(function(val, index, array) {
+					if (index >= 2) {
+						excluded.push(val)
+					}
+				})
+
+				var isExcluded = false
+				for (excluded_index in excluded) {
+					var excluded_name = excluded[excluded_index]
+					if (excluded_name == player.name) {
+						isExcluded = true
+						console.log(player.name + ' is excluded')
+						break
+					}
+				}
+
+				if (player.projected > 0 && !isExcluded) {
 					players.push(player)
 				}
 			})
 
 			/* CHANGE 'SORTBY' AS YOU PLEASE */
-			getMoney(players, SortBy.Points)
+			getMoney(players, SortBy.ProjectedPoints)
 		} else {
 			console.log(error)
 		}
@@ -133,7 +150,7 @@ function getMoney(players, sortby, rotowire_players) {
 	}
 
 	/* SOMETIMES 9 WORKS, SOMETIMES IT DOESN'T */
-	var players_per_position = 9
+	var players_per_position = 10
 
 	if (sortby == SortBy.PointsPerDollar) {
 		console.log('Sorting top ' + players_per_position + ' players by avg. points per dollar.')
