@@ -10,7 +10,7 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 			var players = []
 			
 			$('tr', 'tbody').each(function(i, elem) {
-				var player = {'name': '', 'position': '', 'salary': '', 'projected': '', 'projected_value': '', 'ppg': ''}
+				var player = {'name': '', 'position': '', 'salary': '', 'projected': '', 'projected_value': '', 'ppg': '', 'value': ''}
 
 				player.name = $(this).find('a').text()
 
@@ -41,6 +41,8 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 						break
 					}
 				})
+
+				player.value = parseFloat(((player.ppg/player.salary)*1000).toFixed(2))
 
 				var excluded = []
 				process.argv.forEach(function(val, index, array) {
@@ -108,13 +110,11 @@ function getMoney(players, sortby, rotowire_players) {
 	}
 
 	function compare_points_per_dollar(a, b) {
-		var a_ratio = a.ppg/a.salary
-		var b_ratio = b.ppg/b.salary
-		if (a_ratio == b_ratio) {
+		if (a.value == b.value) {
 			return 0;
-		} else if (a_ratio > b_ratio) {
+		} else if (a.value > b.value) {
 			return -1;
-		} else if (a_ratio < b_ratio) {
+		} else if (a.value < b.value) {
 			return 1;
 		}
 	}
@@ -231,28 +231,36 @@ function getMoney(players, sortby, rotowire_players) {
 		var centers_points = c_combo[0].ppg + c_combo[1].ppg
 		var centers_salaries = c_combo[0].salary + c_combo[1].salary
 		var centers_projected = c_combo[0].projected + c_combo[1].projected
+		var centers_value = c_combo[0].value + c_combo[1].value
 		for (lw_combo_index in lw_combinations) {
 			var lw_combo = lw_combinations[lw_combo_index]
 			var lw_points = lw_combo[0].ppg + lw_combo[1].ppg
 			var lw_salaries = lw_combo[0].salary + lw_combo[1].salary
 			var lw_projected = lw_combo[0].projected + lw_combo[1].projected
+			var lw_value = lw_combo[0].value + lw_combo[1].value
 			for (rw_combo_index in rw_combinations) {
 				var rw_combo = rw_combinations[rw_combo_index]
 				var rw_points = rw_combo[0].ppg + rw_combo[1].ppg
 				var rw_salaries = rw_combo[0].salary + rw_combo[1].salary
 				var rw_projected = rw_combo[0].projected + rw_combo[1].projected
+				var rw_value = rw_combo[0].value + rw_combo[1].value
 				for (def_combo_index in def_combinations) {
 					var def_combo = def_combinations[def_combo_index]
 					var def_points = def_combo[0].ppg + def_combo[1].ppg
 					var def_salaries = def_combo[0].salary + def_combo[1].salary
 					var def_projected = def_combo[0].projected + def_combo[1].projected
+					var def_value = def_combo[0].value + def_combo[1].value
 					for (goalie_index in goalies) {
 						var the_goalie = goalies[goalie_index]
 						var total_salary = centers_salaries+lw_salaries+rw_salaries+def_salaries+the_goalie.salary
 						if (total_salary <= 55000) {
 							var total_points = centers_points+lw_points+rw_points+def_points+the_goalie.ppg
+							total_points = parseFloat(total_points.toFixed(2))
 							var total_projected = centers_projected+lw_projected+rw_projected+def_projected+the_goalie.projected
-							var roster = {'total_salary': total_salary, 'total_points': total_points, 'total_projected': total_projected}
+							total_projected = parseFloat(total_projected.toFixed(2))
+							var total_value = centers_value+lw_value+rw_value+def_value+the_goalie.value
+							total_value = parseFloat(total_value.toFixed(2))
+							var roster = {'total_salary': total_salary, 'total_points': total_points, 'total_projected': total_projected, 'total_value': total_value}
 							roster['c'] = c_combo
 							roster['lw'] = lw_combo
 							roster['rw'] = rw_combo
