@@ -71,7 +71,7 @@ request('http://www.rotowire.com/daily/nhl/value-report.htm', function(error, re
 			})
 
 			/* CHANGE 'SORTBY' AS YOU PLEASE */
-			getMoney(players, SortBy.ProjectedPoints)
+			getMoney(players, SortBy.ProjectedPointsPerDollar)
 		} else {
 			console.log(error)
 		}
@@ -153,8 +153,10 @@ function getMoney(players, sortby, rotowire_players) {
 		}
 	}
 
-	/* SOMETIMES 9 WORKS, SOMETIMES IT DOESN'T */
 	var players_per_position = 10
+	if (sortby == SortBy.PointsPerDollar || sortby == SortBy.ProjectedPointsPerDollar) {
+		players_per_position = 8
+	}
 
 	if (sortby == SortBy.PointsPerDollar) {
 		console.log('Sorting top ' + players_per_position + ' players by avg. points per dollar.')
